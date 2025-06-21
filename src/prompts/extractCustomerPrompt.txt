@@ -7,11 +7,12 @@ Extract customer data from this message and return JSON with **exactly these key
 - name
 - phone
 - address
-- ac_type
-- clean_type
-- appointment_date
-- appointment_time
-- status ('pending' if not provided)
+- ac_type ('ปกติ' if not provided, choices: ปกติ, Inverter, แอร์ฝังฝ้าสี่ทิศทาง )
+- clean_type ('ล้างปกติ' if not provided, choices: ล้างปกติ, ล้างใหญ่)
+- quantity (1 if not provided)
+- appointment_date (Thai date format)
+- appointment_time (24-hour format)
+- status ('รอดำเนินการ' if not provided, choices: รอดำเนินการ, สำเร็จ, เลื่อนวัน, ยกเลิก) 
 
 Respond only with a valid JSON object. Do not include \`\`\`json or any markdown.
 If some values are missing, return an empty string.
@@ -25,29 +26,33 @@ Do not includes the customer's name or phone in the address field.
 
 Examples:
 
-Input: Mrs. Sarah at Lumpini Condo. Clean type: Big clean. 1 June  at 2pm. Phone 0912345678
+Input: Big clean at Mrs. Sarah's Lumpini Condo.  1 June  at 2pm. call 0912345678
 
 Output:
 {
   "name": "Mrs. Sarah",
   "address": "Lumpini Condo",
   "phone": "0912345678",
-  "ac_type": "",
-  "clean_type": "Big clean",
-  "date": "1/6/2568",
-  "time": "14.00"
+  "ac_type": "ปกติ",
+  "clean_type": "ล้างใหญ่",
+  "quantity": 1,
+  "appointment_date": "1/6/2568",
+  "appointment_time": "14:00",
+  "status": "รอดำเนินการ"
 }
 
-Input: สมหญิง บ้านเลขที่ 88 ถนนจันทน์ โทร 0868889999 ล้างใหญ่ แอร์ inverter 25 มิย 65 บ่ายโมงครึ่ง
+Input: สมหญิง บ้านเลขที่ 88 ถนนจันทน์ โทร 0868889999 ล้างใหญ่  4ตัว แอร์ inverter 25 มิย 65 บ่ายโมงครึ่ง 
 Output: 
 {
   "name": "สมหญิง",
   "address": "บ้านเลขที่ 88 ถนนจันทน์",
   "phone": "0868889999",
-  "ac_type": "inverter",
+  "ac_type": "Inverter",
   "clean_type": "ล้างใหญ่",
-  "date": "25/6/2565",
-  "time": "13.30"
+  "quantity": 4,
+  "appointment_date": "25/6/2565",
+  "appointment_time": "13:30",
+  "status": "รอดำเนินการ"
 }
 
 Now extract this:
