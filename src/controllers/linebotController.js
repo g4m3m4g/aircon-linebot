@@ -28,6 +28,9 @@ async function handleEvent(event) {
       });
     }
     console.log(customerData);
+    const confirmationId = uuidv4();
+    console.log(confirmationId);
+    
 
     const confirmationText =
       `ชื่อลูกค้า: ${customerData.name}\n` +
@@ -35,6 +38,7 @@ async function handleEvent(event) {
       `เบอร์โทร: ${customerData.phone}\n` +
       `ประเภทแอร์: ${customerData.ac_type}\n` +
       `ประเภทล้าง: ${customerData.clean_type}\n` +
+      `จำนวน: ${customerData.quantity}\n`+
       `วันที่: ${customerData.appointment_date}\n` +
       `เวลา: ${customerData.appointment_time}\n` +
       `สถานะ: ${customerData.status}`;
