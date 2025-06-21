@@ -17,28 +17,98 @@ async function webhookHandler(req, res) {
 }
 
 async function handleEvent(event) {
-  if (event.type !== "message" || event.message.type !== "text") {
-    return Promise.resolve(null); // ignore non-text or non-message events
-  }
+  if (event.type === "message" && event.message.type === "text") {
+    const userText = event.message.text;
+    // Parse customer data with LLM
+    const customerData = await parseCustomerData(userText);
+    if (!customerData) {
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "ขออภัย ไม่สามารถเข้าใจข้อมูลลูกค้าได้ กรุณาตรวจสอบอีกครั้ง",
+      });
+    }
+    console.log(customerData);
 
-  const userText = event.message.text;
+    const confirmationText =
+      `ชื่อลูกค้า: ${customerData.name}\n` +
+      `ที่อยู่: ${customerData.address}\n` +
+      `เบอร์โทร: ${customerData.phone}\n` +
+      `ประเภทแอร์: ${customerData.ac_type}\n` +
+      `ประเภทล้าง: ${customerData.clean_type}\n` +
+      `วันที่: ${customerData.appointment_date}\n` +
+      `เวลา: ${customerData.appointment_time}\n` +
+      `สถานะ: ${customerData.status}`;
 
-  // Parse customer data with LLM
-  const customerData = await parseCustomerData(userText);
-  if (!customerData) {
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "Sorry, I could not understand the customer data. Please try again.",
+    await client.replyMessage(event.replyToken, {
+      type: "template",
+      altText: "Please confirm customer info",
+      template: {
+        type: "confirm",
+        text: `กรุณายืนยันข้อมูลลูกค้า\n\n${confirmationText}`,
+        actions: [
+          {
+            type: "postback",
+            label: "ยืนยัน",
+            data: JSON.stringify({ action: "confirm", customerData }),
+          },
+          {
+            type: "postback",
+            label: "ยกเลิก",
+            data: JSON.stringify({ action: "cancel" }),
+          },
+        ],
+      },
     });
   }
-  console.log(customerData);
 
-  await client.replyMessage(event.replyToken, {
-    type: "text",
-    text: `get : ${customerData}`,
-  });
+  // Waiting for user confirmation
+  if (event.type === "postback") {
+    let postbackData;
+    try {
+      postbackData = JSON.parse(event.postback.data);
+    } catch (err) {
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "ไม่สามารถอ่านข้อมูลได้",
+      });
+    }
 
-  await addCustomerRecord(customerData).then(console.log("added to db"));
+    // If confirmed
+    if (postbackData.action === "confirm") {
+      const customerData = postbackData.customerData;
+
+      // Send message to user before adding to db
+      await client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "⏳ กำลังบันทึกข้อมูลลูกค้า...",
+      });
+
+      // Add customer data to db
+      try {
+        await addCustomerRecord(customerData);
+        return client.pushMessage(event.source.userId, {
+          type: "text",
+          text: "✅ บันทึกข้อมูลลูกค้าเรียบร้อยแล้ว",
+        });
+      } catch (err) {
+        console.error("Error saving to DB:", err);
+        return client.pushMessage(event.source.userId, {
+          type: "text",
+          text: "❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล",
+        });
+      }
+    }
+
+    // If canceled
+    if (postbackData.action === "cancel") {
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "❌ ยกเลิกการบันทึกข้อมูลแล้ว",
+      });
+    }
+  }
+
+  return Promise.resolve(null);
 }
 
 module.exports = { webhookHandler };

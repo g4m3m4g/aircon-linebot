@@ -19,9 +19,7 @@ async function parseCustomerData(text) {
 
     const rawText = response.choices[0].message.content.trim();
     const json = JSON.parse(rawText);
-    console.log(rawText);
-    console.log(json);
-
+    
     return json;
   } catch (error) {
     console.error("LLM parse error:", error.message);
