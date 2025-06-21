@@ -1,5 +1,7 @@
 const line = require("@line/bot-sdk");
 const lineConfig = require("../config/lineConfig");
+const { addCustomerRecord } = require("../services/sheetdbService");
+const { parseCustomerData } = require("../services/llmService");
 
 const client = new line.Client(lineConfig);
 async function webhookHandler(req, res) {
@@ -20,10 +22,23 @@ async function handleEvent(event) {
   }
 
   const userText = event.message.text;
+
+  // Parse customer data with LLM
+  const customerData = await parseCustomerData(userText);
+  if (!customerData) {
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "Sorry, I could not understand the customer data. Please try again.",
+    });
+  }
+  console.log(customerData);
+
   await client.replyMessage(event.replyToken, {
     type: "text",
-    text: `get : ${userText}`,
+    text: `get : ${customerData}`,
   });
+
+  await addCustomerRecord(customerData).then(console.log("added to db"));
 }
 
 module.exports = { webhookHandler };
