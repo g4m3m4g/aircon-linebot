@@ -16,6 +16,12 @@ Extract customer data from this message and return JSON with **exactly these key
 Respond only with a valid JSON object. Do not include \`\`\`json or any markdown.
 If some values are missing, return an empty string.
 The input may has Thai or English language.
+Make sure the address is **cleaned and grouped properly**:
+- If the house number appears before or after location (e.g. บ้านเลขที่ 98/555 หมู่บ้านมัณฑนา ) reuturn : "98/555 หมู่บ้านมัณฑนา"
+- If condo, building, or room number is mentioned (e.g., ตึก,ห้อง,ชั้น), include all of that.
+- The full address should be a **clear location** 
+
+Do not includes the customer's name or phone in the address field.
 
 Examples:
 
