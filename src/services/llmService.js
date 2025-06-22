@@ -19,10 +19,9 @@ function getTodayDateThaiFormat() {
 
 async function parseCustomerData(text) {
   const today = getTodayDateThaiFormat();
-  const finalPrompt = `Today date is ${today}.\n\n${promptTemplate.replace(
-    "{input}",
-    text
-  )}`;
+  const finalPrompt = promptTemplate
+    .replace("{today}", today)
+    .replace("{input}", text);
 
   try {
     const response = await together.chat.completions.create({
