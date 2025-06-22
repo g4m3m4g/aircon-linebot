@@ -15,10 +15,20 @@ Extract customer data from this message and return JSON with **exactly these key
 - status ('รอดำเนินการ' if not provided, choices: รอดำเนินการ, สำเร็จ, เลื่อนวัน, ยกเลิก) 
 
 Output Rules:
-Respond with only a valid JSON object.
-Do not include markdown, comments, or formatting like ```
-If any value is not available or not clearly mentioned, return an empty string ""
-The output more likely should be Thai.
+- Respond only with a valid JSON object.
+- Do not include markdown, comments, or formatting like ```
+- If any value is missing or unclear, return an empty string ""
+- The output should be in Thai (except keys).
+- If the input is vague or not related to an AC cleaning appointment, return null.
+
+Input Example : ล้างแอร์คุณดาว หมู่บ้านพฤกษา 25 ก.ค.	
+Output : Valid JSON with partial info
+
+Input Example : สวัสดีค่ะ
+Output : null
+
+Input Example : ไปเที่ยวไหนดี
+Output : null
 
 The input may has Thai or English language.
 
