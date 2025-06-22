@@ -8,9 +8,19 @@ const promptTemplate = fs.readFileSync(
   "utf-8"
 );
 
-async function parseCustomerData(text) {
-  const finalPrompt = promptTemplate.replace("{input}", text);
+function getTodayDateThaiFormat() {
+  const today = new Date();
+  const date = today.getDate();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear() + 543;
+  const fullTodayDate = `${date}/${month}/${year}`;
+  return fullTodayDate;
+}
 
+async function parseCustomerData(text) {
+  const today = getTodayDateThaiFormat();
+  const finalPrompt = `Today date is ${today}.\n\n${promptTemplate.replace("{input}", text)}`;
+  
   try {
     const response = await together.chat.completions.create({
       model: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
