@@ -19,8 +19,11 @@ function getTodayDateThaiFormat() {
 
 async function parseCustomerData(text) {
   const today = getTodayDateThaiFormat();
-  const finalPrompt = `Today date is ${today}.\n\n${promptTemplate.replace("{input}", text)}`;
-  
+  const finalPrompt = `Today date is ${today}.\n\n${promptTemplate.replace(
+    "{input}",
+    text
+  )}`;
+
   try {
     const response = await together.chat.completions.create({
       model: "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
@@ -29,7 +32,7 @@ async function parseCustomerData(text) {
 
     const rawText = response.choices[0].message.content.trim();
     const json = JSON.parse(rawText);
-    
+
     return json;
   } catch (error) {
     console.error("LLM parse error:", error.message);
