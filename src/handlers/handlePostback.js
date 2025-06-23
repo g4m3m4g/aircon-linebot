@@ -1,4 +1,5 @@
-const { addCustomerRecord } = require("../services/sheetdbService");
+//const { addCustomerRecord } = require("../services/sheetdbService");
+const { addCustomerRecordToMongo } = require("../services/customerService");
 
 module.exports = async function handlePostback(event, client) {
   let postbackData;
@@ -19,7 +20,7 @@ module.exports = async function handlePostback(event, client) {
     });
 
     try {
-      await addCustomerRecord(customerData);
+      await addCustomerRecordToMongo(customerData);
       return client.pushMessage(event.source.userId, {
         type: "text",
         text: "✅ บันทึกข้อมูลลูกค้าเรียบร้อยแล้ว",
