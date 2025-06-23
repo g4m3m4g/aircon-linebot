@@ -4,6 +4,7 @@ const { buildCustomerListFlex } = require("../utils/flexCustomerList");
 const {
   getAllCustomers,
   getCustomersByAppointmentDate,
+  getCustomersByName,
 } = require("../services/customerService");
 
 module.exports = async function handleMessage(event, client) {
@@ -25,6 +26,22 @@ module.exports = async function handleMessage(event, client) {
 
     const customerListByDateFlex = buildCustomerListFlex(customers);
     return client.replyMessage(event.replyToken, customerListByDateFlex);
+  }
+
+  if (/^ดูข้อมูลลูกค้าชื่อ\s+.+/.test(userText)) {
+    const name = userText.replace(/^ดูข้อมูลลูกค้าชื่อ\s+/, "").trim();
+    
+    const customers = await getCustomersByName(name);
+
+    if (customers.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: `ไม่พบข้อมูลลูกค้าชื่อ "${name}"`,
+      });
+    }
+
+    const flexMessage = buildCustomerListFlex(customers);
+    return client.replyMessage(event.replyToken, flexMessage);
   }
 
   if (userText === "ดูข้อมูลลูกค้า") {

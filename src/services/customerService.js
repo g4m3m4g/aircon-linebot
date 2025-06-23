@@ -16,8 +16,15 @@ async function getCustomersByAppointmentDate(date) {
   });
 }
 
+async function getCustomersByName(name) {
+  return await Customer.find({
+    name: { $regex: name, $options: "i" }, // case-insensitive partial match
+  }).sort({ appointment_date: 1, appointment_time: 1 });
+}
+
 module.exports = {
   addCustomerRecordToMongo,
   getAllCustomers,
   getCustomersByAppointmentDate,
+  getCustomersByName,
 };
