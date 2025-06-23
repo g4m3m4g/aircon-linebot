@@ -1,4 +1,4 @@
-const allowedUserId = process.env.LINE_ALLOWED_USER_ID;
+const allowedUserIds = process.env.LINE_ALLOWED_USER_IDS;
 
 function restrictToOwner(req, res, next) {
   const events = req.body.events || [];
@@ -11,4 +11,8 @@ function restrictToOwner(req, res, next) {
   next();
 }
 
-module.exports = restrictToOwner;
+function isUserAllowed(userId) {
+  return allowedUserIds.includes(userId);
+}
+
+module.exports = { restrictToOwner, isUserAllowed };

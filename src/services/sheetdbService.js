@@ -1,3 +1,4 @@
+// SWITCH TO MONGODB 
 const axios = require("axios");
 
 async function addCustomerRecord(data) {

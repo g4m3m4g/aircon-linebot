@@ -8,8 +8,20 @@ const promptTemplate = fs.readFileSync(
   "utf-8"
 );
 
+function getTodayDateThaiFormat() {
+  const today = new Date();
+  const date = today.getDate();
+  const month = today.getMonth() + 1;
+  const year = today.getFullYear() + 543;
+  const fullTodayDate = `${date}/${month}/${year}`;
+  return fullTodayDate;
+}
+
 async function parseCustomerData(text) {
-  const finalPrompt = promptTemplate.replace("{input}", text);
+  const today = getTodayDateThaiFormat();
+  const finalPrompt = promptTemplate
+    .replace("{today}", today)
+    .replace("{input}", text);
 
   try {
     const response = await together.chat.completions.create({
@@ -19,7 +31,7 @@ async function parseCustomerData(text) {
 
     const rawText = response.choices[0].message.content.trim();
     const json = JSON.parse(rawText);
-    
+
     return json;
   } catch (error) {
     console.error("LLM parse error:", error.message);
