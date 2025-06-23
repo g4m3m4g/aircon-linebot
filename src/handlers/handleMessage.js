@@ -1,10 +1,31 @@
 const { parseCustomerData } = require("../services/llmService");
 const { buildFlexConfirmation } = require("../utils/flexConfirmationBuilder");
 const { buildCustomerListFlex } = require("../utils/flexCustomerList");
-const { getAllCustomers } = require("../services/customerService");
+const {
+  getAllCustomers,
+  getCustomersByAppointmentDate,
+} = require("../services/customerService");
 
 module.exports = async function handleMessage(event, client) {
-  const userText = event.message.text;
+  const userText = event.message.text.trim();
+
+  // Check for command to view customers on a specific date
+  const viewByDateRegex = /^ดูข้อมูลลูกค้าวันที่\s+(\d{1,2}\/\d{1,2}\/\d{4})$/;
+  const match = userText.match(viewByDateRegex);
+  if (match) {
+    const date = match[1];
+    const customers = await getCustomersByAppointmentDate(date);
+
+    if (customers.length === 0) {
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: `ไม่พบข้อมูลลูกค้าในวันที่ ${date}`,
+      });
+    }
+
+    const customerListByDateFlex = buildCustomerListFlex(customers);
+    return client.replyMessage(event.replyToken, customerListByDateFlex);
+  }
 
   if (userText === "ดูข้อมูลลูกค้า") {
     const customers = await getAllCustomers();

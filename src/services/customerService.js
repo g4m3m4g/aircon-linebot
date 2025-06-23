@@ -10,4 +10,14 @@ async function getAllCustomers() {
   return await Customer.find().sort({ createdAt: -1 });
 }
 
-module.exports = { addCustomerRecordToMongo, getAllCustomers };
+async function getCustomersByAppointmentDate(date) {
+  return await Customer.find({ appointment_date: date }).sort({
+    appointment_time: 1,
+  });
+}
+
+module.exports = {
+  addCustomerRecordToMongo,
+  getAllCustomers,
+  getCustomersByAppointmentDate,
+};
