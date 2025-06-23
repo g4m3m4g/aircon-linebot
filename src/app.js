@@ -1,9 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const lineRoutes = require("./routes/linebotRoute");
+const connectMongo = require("./services/mongoService");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+connectMongo();
 
 app.use("/api/line", lineRoutes);
 
