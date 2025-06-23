@@ -20,12 +20,12 @@ async function webhookHandler(req, res) {
 async function handleEvent(event, client) {
   if (!isUserAllowed(event.source.userId)) {
     // Just log and skip reply to save quota
-     console.log("Blocked user:", event.source.userId);
-  await client.pushMessage(event.source.userId, {
-    type: "text",
-    text: "⛔ คุณไม่มีสิทธิ์ใช้งาน",
-  });
-  return;
+    console.log("Blocked user:", event.source.userId);
+    await client.pushMessage(event.source.userId, {
+      type: "text",
+      text: "⛔ คุณไม่มีสิทธิ์ใช้งาน",
+    });
+    return;
   }
 
   if (event.type === "message" && event.message.type === "text") {
