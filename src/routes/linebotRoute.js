@@ -5,11 +5,6 @@ const router = express.Router();
 const { webhookHandler } = require("../controllers/linebotController");
 const restrictToOwner = require("../middleware/authMiddleware");
 
-router.post(
-  "/webhook",
-  line.middleware(lineConfig),
-  restrictToOwner,
-  webhookHandler
-);
+router.post("/webhook", line.middleware(lineConfig), webhookHandler);
 
 module.exports = router;
