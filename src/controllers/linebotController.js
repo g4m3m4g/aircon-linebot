@@ -7,7 +7,6 @@ const { isUserAllowed } = require("../middleware/authMiddleware");
 const client = new line.Client(lineConfig);
 async function webhookHandler(req, res) {
   const events = req.body.events;
-
   try {
     await Promise.all(events.map((event) => handleEvent(event, client)));
     res.status(200).send("OK");

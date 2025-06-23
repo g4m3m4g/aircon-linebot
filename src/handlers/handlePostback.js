@@ -6,15 +6,17 @@ module.exports = async function handlePostback(event, client) {
   try {
     postbackData = JSON.parse(event.postback.data);
   } catch (err) {
-    return client.replyMessage(event.replyToken, {
+    return client.pushMessage(event.source.userId, {
       type: "text",
-      text: "ไม่สามารถอ่านข้อมูลได้",
+      text: "❌ ไม่สามารถอ่านข้อมูลได้",
     });
   }
 
   if (postbackData.action === "confirm") {
     const customerData = postbackData.customerData;
-    await client.replyMessage(event.replyToken, {
+
+    // Inform user that saving is in progress
+    await client.pushMessage(event.source.userId, {
       type: "text",
       text: "⏳ กำลังบันทึกข้อมูลลูกค้า...",
     });
@@ -35,7 +37,7 @@ module.exports = async function handlePostback(event, client) {
   }
 
   if (postbackData.action === "cancel") {
-    return client.replyMessage(event.replyToken, {
+    return client.pushMessage(event.source.userId, {
       type: "text",
       text: "❌ ยกเลิกการบันทึกข้อมูลแล้ว",
     });
