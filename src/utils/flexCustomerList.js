@@ -1,45 +1,32 @@
 function buildCustomerListFlex(customers) {
-  const customerContents = customers.slice(0, 5).map((c, i) => ({
-    type: "box",
-    layout: "vertical",
-    margin: "md",
-    spacing: "xs",
-    contents: [
-      {
-        type: "text",
-        text: `#${i + 1} ${c.name}`,
-        weight: "bold",
-        size: "md",
-        color: "#333333"
-      },
-      {
-        type: "text",
-        text: `📍 ${c.address}`,
-        wrap: true,
-        size: "sm",
-        color: "#666666"
-      },
-      {
-        type: "text",
-        text: `📞 ${c.phone} | แอร์: ${c.ac_type}, ล้าง: ${c.clean_type}, ${c.quantity} ตัว`,
-        wrap: true,
-        size: "sm",
-        color: "#666666"
-      },
-      {
-        type: "text",
-        text: `🗓️ ${c.appointment_date}     ⏰ ${c.appointment_time}`,
-        wrap: true,
-        size: "sm",
-        color: "#666666"
-      },
-      {
-        type: "text",
-        text: `สถานะ: ${c.status}`,
-        size: "sm",
-        color: "#888888"
-      }
-    ]
+  const bubbles = customers.slice(0, 5).map((c, i) => ({
+    type: "bubble",
+    size: "mega",
+    body: {
+      type: "box",
+      layout: "vertical",
+      spacing: "md",
+      paddingAll: "20px",
+      contents: [
+        {
+          type: "text",
+          text: `🧾 รายการลูกค้า #${i + 1}`,
+          size: "lg",
+          weight: "bold",
+          color: "#1DB446",
+        },
+        divider(),
+        textRow("👤 ชื่อ", c.name),
+        textRow("📍 ที่อยู่", c.address),
+        textRow("📞 เบอร์", c.phone),
+        textRow("❄️ ประเภทแอร์", c.ac_type),
+        textRow("🧼 ประเภทล้าง", c.clean_type),
+        textRow("🔢 จำนวน", `${c.quantity} ตัว`),
+        textRow("📅 วันที่", c.appointment_date),
+        textRow("⏰ เวลา", c.appointment_time),
+        textRow("📌 สถานะ", c.status),
+      ],
+    },
   }));
 
   return {
@@ -47,15 +34,41 @@ function buildCustomerListFlex(customers) {
     altText: "ข้อมูลลูกค้าทั้งหมด",
     contents: {
       type: "carousel",
-      contents: customerContents.map(content => ({
-        type: "bubble",
-        body: {
-          type: "box",
-          layout: "vertical",
-          contents: [content]
-        }
-      }))
-    }
+      contents: bubbles,
+    },
+  };
+}
+
+function textRow(label, value) {
+  return {
+    type: "box",
+    layout: "horizontal",
+    spacing: "sm",
+    contents: [
+      {
+        type: "text",
+        text: label,
+        size: "sm",
+        color: "#555555",
+        flex: 4,
+        wrap: true,
+      },
+      {
+        type: "text",
+        text: value || "-",
+        size: "sm",
+        color: "#111111",
+        wrap: true,
+        flex: 7,
+      },
+    ],
+  };
+}
+
+function divider() {
+  return {
+    type: "separator",
+    margin: "md",
   };
 }
 
