@@ -14,7 +14,9 @@ Extract customer data from this message and return JSON with **exactly these key
 - clean_type ('ล้างปกติ' if not provided, choices: ล้างปกติ, ล้างใหญ่)
 - quantity (1 if not provided)
 - appointment_date ( format as day/month/year using Thai Buddhist year (e.g., 25 มิ.ย. 65 → 25/6/2565) )
-- appointment_time ( format as 24-hour time (e.g., บ่ายโมงครึ่ง → 13:30) )
+- appointment_time ( format as 24-hour time (e.g., บ่ายโมงครึ่ง → 13:30) and have to include start time and end time only,
+ **if user did not provide the end time you have to calculate it by multiply the quantity of ac with 2 and add to the time**,
+ and if the clean type is "ล้างใหญ่" you have to make it full day (start time to 17:00)) 
 - status ('รอดำเนินการ' if not provided, choices: รอดำเนินการ, สำเร็จ, เลื่อนวัน, ยกเลิก) 
 
 Output Rules:
@@ -56,11 +58,11 @@ Output:
   "clean_type": "ล้างใหญ่",
   "quantity": 1,
   "appointment_date": "1/6/2568",
-  "appointment_time": "14:00",
+  "appointment_time": "14:00-17:00",
   "status": "รอดำเนินการ"
 }
 
-Input: สมหญิง บ้านเลขที่ 88 ถนนจันทน์ โทร 0868889999 ล้างใหญ่  4ตัว แอร์ inverter 25 มิย 65 บ่ายโมงครึ่ง 
+Input: สมหญิง บ้านเลขที่ 88 ถนนจันทน์ โทร 0868889999 ล้าง 4ตัว แอร์ inverter 25 มิย 65 เก้าโมง
 Output: 
 {
   "name": "สมหญิง",
@@ -70,11 +72,11 @@ Output:
   "clean_type": "ล้างใหญ่",
   "quantity": 4,
   "appointment_date": "25/6/2565",
-  "appointment_time": "13:30",
+  "appointment_time": "9:00-17:00",
   "status": "รอดำเนินการ"
 }
 
-Input: ล้างใหญ่แอร์ 3 ตัวที่บ้านคุณหมวย แอร์แบบฝังฝ้าสี่ทิศทางทั้งหมด อยู่ในหมู่บ้านภัทรินทร์วิลล์ 21/7 ถนนเลียบคลองห้า โทร 0897776666 วันอังคารหน้า ตอนสายๆ
+Input: ล้างใหญ่แอร์ 3 ตัวที่บ้านคุณหมวย แอร์แบบฝังฝ้าสี่ทิศทางทั้งหมด อยู่ในหมู่บ้านภัทรินทร์วิลล์ 21/7 ถนนเลียบคลองห้า โทร 0897776666 30 กันยา 65 ตอนเช้าๆ
 Output:
 {
   "name": "คุณหมวย",
@@ -83,8 +85,8 @@ Output:
   "ac_type": "แอร์ฝังฝ้าสี่ทิศทาง",
   "clean_type": "ล้างใหญ่",
   "quantity": 3,
-  "appointment_date": "",
-  "appointment_time": "",
+  "appointment_date": "30/9/2565",
+  "appointment_time": "9:00-15:00",
   "status": "รอดำเนินการ"
 }
 
@@ -98,7 +100,7 @@ Output:
   "clean_type": "ล้างปกติ",
   "quantity": 2,
   "appointment_date": "10/7/2568",
-  "appointment_time": "12:00",
+  "appointment_time": "12:00-16:00",
   "status": "รอดำเนินการ"
 }
 
