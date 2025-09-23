@@ -3,7 +3,7 @@ module.exports = function logMiddleware(req, res, next) {
     timestamp: new Date().toISOString(),
     ip: req.ip || req.connection.remoteAddress,
     headers: req.headers,
-    body: req.body.events[0].message,
+    body: req.body?.events?.[0]?.message || null,
   };
 
   console.log("---- Incoming Webhook ----");
