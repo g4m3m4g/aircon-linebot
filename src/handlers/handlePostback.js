@@ -1,4 +1,4 @@
-//const { addCustomerRecord } = require("../services/sheetdbService");
+
 const { addCustomerRecordToMongo } = require("../services/customerService");
 
 module.exports = async function handlePostback(event, client) {

@@ -8,7 +8,8 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@line/bot-sdk": "^10.0.0",
