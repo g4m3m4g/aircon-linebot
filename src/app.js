@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const lineRoutes = require("./routes/linebotRoute");
+const exportRoutes = require("./routes/exportRoute");
 const connectMongo = require("./services/mongoService");
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("✅ AIRCON LINE Bot is running");
 });
+app.use("/api", exportRoutes);
 
 // Connect to MongoDB and start server
 connectMongo()

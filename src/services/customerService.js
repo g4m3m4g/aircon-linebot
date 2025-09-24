@@ -10,6 +10,29 @@ async function getAllCustomers() {
   return await Customer.find().sort({ createdAt: -1 });
 }
 
+async function getAllBookingsDateAndTime() {
+  const result = await Customer.aggregate([
+    {
+      $group: {
+        _id: "$appointment_date",
+        times: { $addToSet: "$appointment_time" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        appointment_date: "$_id",
+        appointment_times: "$times",
+      },
+    },
+    {
+      $sort: { appointment_date: 1 },
+    },
+  ]);
+
+  return result;
+}
+
 async function getCustomersByAppointmentDate(date) {
   return await Customer.find({ appointment_date: date }).sort({
     appointment_time: 1,
@@ -27,4 +50,5 @@ module.exports = {
   getAllCustomers,
   getCustomersByAppointmentDate,
   getCustomersByName,
+  getAllBookingsDateAndTime,
 };
