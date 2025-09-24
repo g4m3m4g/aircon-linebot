@@ -12,6 +12,7 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@line/bot-sdk": "^10.0.0",
     "axios": "^1.10.0",
     "dotenv": "^16.5.0",

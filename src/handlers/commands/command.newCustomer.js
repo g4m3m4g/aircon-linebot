@@ -1,7 +1,13 @@
-const { parseCustomerData } = require("../../services/llmService");
-const { buildFlexConfirmation } = require("../../utils/flexConfirmationBuilder");
+const { parseCustomerData } = require("../../services/llmGeminiService");
+const {
+  buildFlexConfirmation,
+} = require("../../utils/flexConfirmationBuilder");
 
-module.exports = async function handleNewCustomer(client, replyToken, userText) {
+module.exports = async function handleNewCustomer(
+  client,
+  replyToken,
+  userText
+) {
   const customerData = await parseCustomerData(userText);
   if (!customerData) {
     return client.replyMessage(replyToken, {
