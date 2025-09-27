@@ -12,8 +12,8 @@ module.exports = async function handlePostback(event, client) {
   let postbackData;
   try {
     postbackData = JSON.parse(event.postback.data);
-    console.log("📌 postbackData:", postbackData);
-    console.log("📌 newData:", postbackData.newData);
+    // console.log("📌 postbackData:", postbackData);
+    // console.log("📌 newData:", postbackData.newData);
   } catch (err) {
     console.error("❌ Error parsing postback data:", err);
     return client.pushMessage(event.source.userId, {
@@ -24,15 +24,22 @@ module.exports = async function handlePostback(event, client) {
 
   // --------- Confirm New Customer ---------
   if (postbackData.action === "confirm") {
-    const rawData = postbackData.newData;
+    const rawData = postbackData.customerData;
+    if (!rawData || !rawData.name) {
+      return client.pushMessage(event.source.userId, {
+        type: "text",
+        text: "❌ ข้อมูลลูกค้าไม่ครบ",
+      });
+    }
+
     const customerData = {
       ...rawData,
       quantity: rawData.quantity ? Number(rawData.quantity) : 0,
       name: rawData.name || "",
       phone: rawData.phone || "",
       address: rawData.address || "",
-      ac_type: rawData.ac_type || "",
-      clean_type: rawData.clean_type || "",
+      ac_type: rawData.ac_type || "ธรรมดา",
+      clean_type: rawData.clean_type || "ล้างปกติ",
       appointment_date: rawData.appointment_date || "",
       appointment_time: rawData.appointment_time || "",
       status: rawData.status || "รอดำเนินการ",

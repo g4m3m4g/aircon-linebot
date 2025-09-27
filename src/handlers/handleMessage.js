@@ -7,24 +7,28 @@ const handleUpdateCustomer = require("./commands/command.updateCustomer");
 module.exports = async function handleMessage(event, client) {
   const userText = event.message.text.trim();
 
-  if (userText === "ดูข้อมูลลูกค้า") {
+  // --- ดูข้อมูลลูกค้าทั้งหมด ---
+  if (/ดู(ข้อมูล)?ลูกค้า$/i.test(userText)) {
     return handleShowAllCustomers(client, event.replyToken);
   }
 
-  const dateMatch = userText.match(
-    /^ดูข้อมูลลูกค้าวันที่\s+(\d{1,2}\/\d{1,2}\/\d{4})$/
-  );
-  if (dateMatch)
+  // --- ดูข้อมูลลูกค้าตามวัน ---
+  const dateMatch = userText.match(/(\d{1,2}\/\d{1,2}\/\d{4})/);
+  if (/ดู(ข้อมูล)?ลูกค้า/i.test(userText) && dateMatch) {
     return handleSearchByDate(client, event.replyToken, dateMatch[1]);
-
-  if (/^ดูข้อมูลลูกค้าชื่อ\s+.+/.test(userText)) {
-    const name = userText.replace(/^ดูข้อมูลลูกค้าชื่อ\s+/, "").trim();
-    return handleSearchByName(client, event.replyToken, name);
   }
 
-  if (/^(อัพเดทข้อมูลลูกค้า|แก้ไขลูกค้า)/.test(userText)) {
+  // --- ดูข้อมูลลูกค้าตามชื่อ ---
+  const nameMatch = userText.match(/ลูกค้า(?:ชื่อ)?\s*(.+)/i);
+  if (/ดู(ข้อมูล)?ลูกค้า/i.test(userText) && nameMatch) {
+    return handleSearchByName(client, event.replyToken, nameMatch[1].trim());
+  }
+
+  // --- อัพเดทข้อมูลลูกค้า ---
+  if (/อัพเดท|แก้ไข/i.test(userText)) {
     return handleUpdateCustomer(client, event.replyToken, userText);
   }
 
+  // --- เพิ่มลูกค้าใหม่ (default fallback) ---
   return handleNewCustomer(client, event.replyToken, userText);
 };
