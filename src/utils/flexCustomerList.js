@@ -1,5 +1,5 @@
 function buildCustomerListFlex(customers) {
-  const bubbles = customers.slice(0, 5).map((c, i) => ({
+  const bubbles = customers.slice(0, 10).map((c, i) => ({
     type: "bubble",
     size: "mega",
     body: {
