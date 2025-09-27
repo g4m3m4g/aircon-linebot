@@ -10,6 +10,11 @@ const promptTemplate = fs.readFileSync(
   "utf-8"
 );
 
+const updateCustomerPromptTemplate = fs.readFileSync(
+  path.join(__dirname, "../prompts/extractUpdateCustomerPrompt.txt"),
+  "utf-8"
+);
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 function getTodayDateThaiFormat() {
@@ -68,4 +73,31 @@ async function parseCustomerData(text) {
   }
 }
 
-module.exports = { parseCustomerData };
+async function parseUpdateCustomerData(text) {
+  const today = getTodayDateThaiFormat();
+  const finalPrompt = updateCustomerPromptTemplate
+    .replace("{today}", today)
+    .replace("{input}", text);
+
+  const primaryModel = "gemini-2.5-flash";
+  const fallbackModel = "gemini-2.5-flash-lite";
+
+  try {
+    console.log(`⚡ Using model for update: ${primaryModel}`);
+    return await callModel(primaryModel, finalPrompt);
+  } catch (error) {
+    console.warn(
+      `⚠️ Primary model failed (${primaryModel}), trying fallback...`,
+      error.message
+    );
+    try {
+      console.log(`🔄 Using fallback model for update: ${fallbackModel}`);
+      return await callModel(fallbackModel, finalPrompt);
+    } catch (fallbackError) {
+      console.error("❌ Both models failed for update:", fallbackError);
+      return null;
+    }
+  }
+}
+
+module.exports = { parseCustomerData, parseUpdateCustomerData };
