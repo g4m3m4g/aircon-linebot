@@ -36,7 +36,7 @@ Input Example : ไปเที่ยวไหนดี
 Output : null
 
 The input may has Thai or English language.
-User may input command like "ดูข้อมูลลูกค้า", "ดูข้อมูลลูกค้าชื่อ", "ดูข้อมูลลูกค้าวันที่" You have to ignore them.
+User may input command like "ดูข้อมูลลูกค้า", "ดูข้อมูลลูกค้าชื่อ", "ดูข้อมูลลูกค้าวันที่", "อัพเดทข้อมูลลูกค้า" You have to ignore them.
 
 Make sure the address is **cleaned and grouped properly**:
 - If the house number appears before or after location (e.g. บ้านเลขที่ 98/555 หมู่บ้านมัณฑนา ) reuturn : "98/555 หมู่บ้านมัณฑนา"
