@@ -30,10 +30,6 @@ async function callModel(modelName, prompt) {
 
   const result = await model.generateContent(prompt);
   const rawText = result.response.text();
-
-  // ✅ Log ตอบกลับจาก Gemini
-  console.log(`📩 Response from ${modelName}:`, rawText);
-
   try {
     return JSON.parse(rawText);
   } catch (err) {
@@ -49,7 +45,7 @@ async function parseCustomerData(text) {
     .replace("{input}", text);
 
   const primaryModel = "gemini-2.5-flash";
-  const fallbackModel = "gemini-2.0-flash-001";
+  const fallbackModel = "gemini-2.5-flash-lite";
 
   try {
     console.log(`⚡ Using model: ${primaryModel}`);
